@@ -144,6 +144,10 @@ full_social_media_df = posts_engagement_df.join(
 # Filter record for business relevance
 filterd_social_media_df = full_social_media_df.filter(
     col("engagement_score") > 0)
+print("===== Filtered Social Media DataFrame Schema ======")
+filterd_social_media_df.printSchema()
+
+
 
 
 # Group & Aggregate the data
@@ -154,12 +158,12 @@ print("===== Category Engagement DataFrame =====")
 category_engagement_df.show(truncate=False)
 
 creator_engagement_df = filterd_social_media_df.groupBy(
-    "creator_user_id",
+    "user_id",
     "username"
 ).agg(
     {"engagement_score": "sum"}
 ).withColumnRenamed("sum(engagement_score)", "creator_total_engagement")
-print("===== Category Engagement DataFrame =====")
+print("===== Creator Engagement DataFrame =====")
 creator_engagement_df.show(truncate=False)
 
 region_engagement_df = filterd_social_media_df.groupBy("region").agg(
@@ -219,12 +223,12 @@ creator_classified_df.select(
 
 # Write processed Outputs
 category_engagement_df.write.mode("overwrite").csv(
-    "data/processed/cateogory_engagement_summary",
+    "data/processed/category_engagement_summary",
     header=True
 )
 
 creator_engagement_df.write.mode("overwrite").csv(
-    "data/processed/category_engagement_summary",
+    "data/processed/creator_engagement_summary",
     header=True
 )
 
